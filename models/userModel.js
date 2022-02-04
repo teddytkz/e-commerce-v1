@@ -13,6 +13,7 @@ const User = db.define(
         type: Sequelize.STRING,
         lowercase: true,
         required: true,
+        unique: true
     },
     "password": {
         type: Sequelize.STRING,
@@ -24,9 +25,10 @@ const User = db.define(
         lowercase: true,
         validate: (value) => {
             return validator.isEmail(value)
-        }
+        },
+        unique: true
     },
-    "nama": {
+    "name": {
         type: Sequelize.STRING,
         required: true,
     },
