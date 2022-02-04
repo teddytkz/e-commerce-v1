@@ -30,7 +30,7 @@ const User = db.define(
         type: Sequelize.STRING,
         required: true,
     },
-    "nomor_telepon": {
+    "phone": {
         type: Sequelize.STRING,
         required: true,
     },
