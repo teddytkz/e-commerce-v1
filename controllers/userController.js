@@ -4,12 +4,28 @@ const jwt = require('jsonwebtoken')
 
 exports.getAllUser = async function (req, res) {
     try {
-        const user = await Users.findAll({
+        const users = await Users.findAll({
             attributes: ['id_user', 'username', 'name', 'email', 'phone']
         })
-        res.json(user)
+        res.json(users)
     } catch (err) {
         console.log(err)
+        res.status(400).json({ msg: "Failed Get User" })
+    }
+}
+
+exports.getUser = async function (req, res) {
+    let id = req.params.id
+    try {
+        const users = await Users.findOne({
+            where: {
+                id_user: id
+            }
+        })
+        res.json(users)
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({ msg: "Failed Get User" })
     }
 }
 
@@ -62,12 +78,26 @@ exports.postLogin = async function (req, res) {
     }
 }
 
-exports.getUser = async function (req, res) {
 
-}
 
-exports.updateUse = async function (req, res) {
-
+exports.updateUser = async function (req, res) {
+    let id = req.params.id
+    const { email, name, phone } = req.body
+    try {
+        const users = await Users.update({
+            email: email,
+            name: name,
+            phone: phone
+        }, {
+            where: {
+                id_user: id
+            }
+        })
+        res.json({ msg: "Success Update User" })
+    } catch (err) {
+        console.log(err)
+        res.status(400).json('Failed Update User')
+    }
 }
 
 function getToken(userData) {
