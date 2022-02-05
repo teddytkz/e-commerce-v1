@@ -1,5 +1,6 @@
 require("dotenv").config()
 const express = require("express")
+const cookieparser = require('cookie-parser')
 const app = express()
 const PORT = process.env.PORT
 
@@ -15,6 +16,10 @@ const userRouter = require('./routes/userRoutes')
 const productRouter = require('./routes/productRoutes')
 const brandRouter = require('./routes/brandRoutes')
 const typeRouter = require('./routes/typeRoutes')
+const tokenRoutes = require('./routes/tokenRoutes')
+
+//Cookie Parser
+app.use(cookieparser())
 
 //Json
 app.use(express.json())
@@ -24,6 +29,7 @@ app.use('/api/v1/user', userRouter)
 app.use('/api/v1/product', productRouter)
 app.use('/api/v1/brand', brandRouter)
 app.use('/api/v1/type', typeRouter)
+app.use('/api/v1/token', tokenRoutes)
 
 
 //Initial DB
