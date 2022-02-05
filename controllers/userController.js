@@ -1,7 +1,6 @@
 const Users = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const User = require('../models/userModel')
 
 exports.getAllUser = async function (req, res) {
     try {
@@ -63,6 +62,14 @@ exports.postLogin = async function (req, res) {
     }
 }
 
+exports.getUser = async function (req, res) {
+
+}
+
+exports.updateUse = async function (req, res) {
+
+}
+
 function getToken(userData) {
     const userId = userData[0].id_user
     const userUsername = userData[0].username
@@ -91,7 +98,7 @@ function getToken(userData) {
 }
 
 function updateToken(id_user, refreshToken) {
-    User.update(
+    Users.update(
         { refreshtoken: refreshToken },
         {
             where: {
