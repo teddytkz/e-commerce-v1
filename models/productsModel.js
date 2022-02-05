@@ -2,6 +2,7 @@ const Sequelize = require('sequelize')
 const db = require('../config/Database')
 
 const Brand = require('./brandModel')
+const Type = require('./typeModel')
 
 const Product = db.define(
     "product", {
@@ -16,10 +17,10 @@ const Product = db.define(
     "product_description": {
         type: Sequelize.TEXT
     },
-    "product_brand": {
-        type: Sequelize.STRING
+    "id_brand": {
+        type: Sequelize.INTEGER
     },
-    "product_type": {
+    "id_type": {
         type: Sequelize.INTEGER
     },
     "product_price": {
@@ -39,7 +40,10 @@ const Product = db.define(
 }
 )
 
-Product.hasOne(Brand, { foreignKey: 'id_brand' })
-Product.belongsTo(Brand, { foreignKey: 'product_brand' })
+Brand.hasOne(Product, { foreignKey: 'id_brand' })
+Type.hasOne(Product, { foreignKey: 'id_type' })
+
+Product.belongsTo(Brand, { foreignKey: 'id_brand' })
+Product.belongsTo(Type, { foreignKey: 'id_type' })
 
 module.exports = Product
