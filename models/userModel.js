@@ -37,7 +37,7 @@ const User = db.define(
         required: true,
     },
     "refreshtoken": {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
     }
 }, {
     freezeTableName: true
