@@ -26,7 +26,11 @@ exports.getAllBrand = async function (req, res) {
 exports.getBrand = async function (req, res) {
     let id = req.params.id
     try {
-        const brands = await Brand.findById(id)
+        const brands = await Brand.findOne({
+            where: {
+                id_brand: id
+            }
+        })
         res.json(brands)
     } catch (err) {
         console.log(err)
