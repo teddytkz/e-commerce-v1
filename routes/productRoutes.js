@@ -9,7 +9,6 @@ router.get('/popularview', productController.getPopularView)
 router.get('/popularwish', productController.getPopularWish)
 router.get('/:id', productController.getProduct)
 
-
 //PUT
 router.put('/:id', productController.updateProduct)
 
