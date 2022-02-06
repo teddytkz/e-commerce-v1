@@ -79,9 +79,20 @@ const getPagination = (page, size) => {
     return { limit, offset };
 };
 
+const getPagingData = (data, page, limit) => {
+    const { count: totalItems } = data;
+    const currentPage = page ? +page : 0;
+    const totalPages = Math.ceil((totalItems / 2) / limit);
+    const totalItem = (totalItems / 2)
+    return { totalItem, totalPages, currentPage };
+};
+
 exports.getAllProduct = async function (req, res) {
     const { page, size, product_name, product_price, product_discount, id_brand, id_type } = req.query
-    const { limit, offset } = getPagination(page, size)
+    if (page <= 0) {
+        return res.status(400).json({ msg: "Page Start From 1" })
+    }
+    const { limit, offset } = getPagination(page - 1, size)
     const search_product = {}
     if (product_name) {
         search_product.product_name = { [Op.like]: `%${product_name}%` }
@@ -99,7 +110,7 @@ exports.getAllProduct = async function (req, res) {
         search_product.id_type = { [Op.like]: `%${id_type}%` }
     }
     try {
-        const products = await Product.findAll({
+        const products = await Product.findAndCountAll({
             include: [{
                 model: Brand
             }, {
@@ -113,8 +124,9 @@ exports.getAllProduct = async function (req, res) {
                 [Op.and]: search_product
             }
         }).then((results) => {
+            const pagingData = getPagingData(results, page, limit);
             let products_arr = []
-            results.forEach((result) => {
+            results.rows.forEach((result) => {
                 let products_images_arr = []
                 result.productimages.forEach((resultImage) => {
                     products_images_arr.push({
@@ -136,12 +148,12 @@ exports.getAllProduct = async function (req, res) {
                     wish: result.product_wish
                 })
             })
-            // res.json(products_arr)
             res.status(200).json({
                 msg: "Get All Product Success",
-                totalItems: results.length,
+                totalItems: pagingData.totalItem,
+                totalPages: pagingData.totalPages,
+                currentPages: pagingData.currentPage,
                 product: products_arr
-
             })
         })
 
