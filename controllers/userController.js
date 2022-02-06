@@ -78,7 +78,22 @@ exports.postLogin = async function (req, res) {
     }
 }
 
-
+exports.logout = async function (req, res) {
+    const refreshToken = req.cookies.refreshToken
+    if (!refreshToken) {
+        return res.sendStatus(204)
+    }
+    const users = await Users.findAll({
+        where: {
+            refreshtoken: refreshToken,
+        },
+    });
+    if (!users[0]) return res.sendStatus(204);
+    const userId = users[0].id_user;
+    await Users.update({ refresh_token: null }, { where: { id_user: userId } });
+    res.clearCookie("refreshToken");
+    return res.sendStatus(200);
+}
 
 exports.updateUser = async function (req, res) {
     let id = req.params.id

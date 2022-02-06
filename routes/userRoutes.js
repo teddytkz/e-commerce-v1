@@ -13,5 +13,6 @@ router.put('/:id', userController.updateUser)
 
 router.post('/register', userController.postRegister)
 router.post('/login', userController.postLogin)
+router.post('/logout', userController.logout)
 
 module.exports = router
