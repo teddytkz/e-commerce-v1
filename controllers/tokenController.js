@@ -9,7 +9,7 @@ exports.getRefreshToken = async function (req, res) {
         }
         const users = await Users.findAll({
             where: {
-                refresh_token: refreshToken
+                refreshtoken: refreshToken
             }
         })
         if (!users[0]) {
@@ -30,12 +30,12 @@ exports.getRefreshToken = async function (req, res) {
                 const userAccessToken = jwt.sign(
                     { userId, userUsername, userName, userEmail, userPhone },
                     process.env.ACCESS_TOKEN_SECRET,
-                    { expiresIn: "20s" }
+                    { expiresIn: "3600s" }
                 )
                 res.json({ userAccessToken })
             }
         )
-    } catch (error) {
+    } catch (err) {
         console.log(err)
         res.status(400).json("Token Error")
     }
