@@ -26,7 +26,11 @@ exports.getAllType = async function (req, res) {
 exports.getType = async function (req, res) {
     let id = req.params.id
     try {
-        const types = await Type.findById(id)
+        const types = await Type.findOne({
+            where: {
+                id_type: id
+            }
+        })
         res.json(types)
     } catch (err) {
         console.log(err)
