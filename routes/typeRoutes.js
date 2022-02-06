@@ -7,7 +7,7 @@ router.get('/', typeController.getAllType)
 router.get('/:id', typeController.getType)
 
 //POST
-router.post('/update', typeController.updateType)
+router.post('/update/:id', typeController.updateType)
 router.post('/create', typeController.createType)
 
 //DELETE
