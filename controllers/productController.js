@@ -129,8 +129,9 @@ exports.getAllProduct = async function (req, res) {
             results.rows.forEach((result) => {
                 let products_images_arr = []
                 result.productimages.forEach((resultImage) => {
+                    let protocol = req.connection.encrypted ? 'https://' : 'http://';
                     products_images_arr.push({
-                        path: req.get('host') + "/" + resultImage.file_path
+                        path: protocol + req.get('host') + "/" + resultImage.file_path
                     })
                 })
                 products_arr.push({
@@ -185,8 +186,9 @@ exports.getProduct = async function (req, res) {
         products.forEach((result) => {
             let products_images_arr = []
             result.productimages.forEach((resultImage) => {
+                let protocol = req.connection.encrypted ? 'https://' : 'http://';
                 products_images_arr.push({
-                    path: req.get('host') + "/" + resultImage.file_path
+                    path: protocol + req.get('host') + "/" + resultImage.file_path
                 })
             })
             products_arr.push({
