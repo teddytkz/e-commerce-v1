@@ -33,17 +33,23 @@ const Product = db.define(
         type: Sequelize.TEXT
     },
     "product_view": {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+    },
+    "product_wish": {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
     },
 }, {
     freezeTableName: true
 }
 )
 
-Brand.hasOne(Product, { foreignKey: 'id_brand' })
-Type.hasOne(Product, { foreignKey: 'id_type' })
+Brand.hasMany(Product, { foreignKey: 'id_brand' })
+Type.hasMany(Product, { foreignKey: 'id_type' })
 
 Product.belongsTo(Brand, { foreignKey: 'id_brand' })
 Product.belongsTo(Type, { foreignKey: 'id_type' })
+
 
 module.exports = Product
