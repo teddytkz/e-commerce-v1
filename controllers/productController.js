@@ -4,6 +4,7 @@ const Type = require('../models/typeModel')
 
 const multer = require('multer')
 const productImages = require('../models/productImagesModel')
+const { Op } = require('sequelize')
 
 
 const fileStorageEngine = multer.diskStorage({
@@ -71,7 +72,32 @@ exports.createProduct = async function (req, res) {
     }
 }
 
+const getPagination = (page, size) => {
+    const limit = size ? +size : 3;
+    const offset = page ? page * limit : 0;
+
+    return { limit, offset };
+};
+
 exports.getAllProduct = async function (req, res) {
+    const { page, size, product_name, product_price, product_discount, id_brand, id_type } = req.query
+    const { limit, offset } = getPagination(page, size)
+    const search_product = {}
+    if (product_name) {
+        search_product.product_name = { [Op.like]: `%${product_name}%` }
+    }
+    if (product_price) {
+        search_product.product_price = { [Op.like]: `%${product_price}%` }
+    }
+    if (product_discount) {
+        search_product.product_discount = { [Op.like]: `%${product_discount}%` }
+    }
+    if (id_brand) {
+        search_product.id_brand = { [Op.like]: `%${id_brand}%` }
+    }
+    if (id_type) {
+        search_product.id_type = { [Op.like]: `%${id_type}%` }
+    }
     try {
         const products = await Product.findAll({
             include: [{
@@ -81,37 +107,52 @@ exports.getAllProduct = async function (req, res) {
             }, {
                 model: productImages
             }],
-        })
-        let products_arr = []
-        products.forEach((result) => {
-            let products_images_arr = []
-            result.productimages.forEach((resultImage) => {
-                products_images_arr.push({
-                    path: req.get('host') + "/" + resultImage.file_path
+            limit,
+            offset,
+            where: {
+                [Op.and]: search_product
+            }
+        }).then((results) => {
+            let products_arr = []
+            results.forEach((result) => {
+                let products_images_arr = []
+                result.productimages.forEach((resultImage) => {
+                    products_images_arr.push({
+                        path: req.get('host') + "/" + resultImage.file_path
+                    })
+                })
+                products_arr.push({
+                    id: result.id_product,
+                    name: result.product_name,
+                    description: result.product_description,
+                    brand_id: result.brand.id_brand,
+                    brand_name: result.brand.brand_name,
+                    type_id: result.type.id_type,
+                    type_name: result.type.type_name,
+                    price: result.product_price,
+                    discount: result.product_discount,
+                    images: products_images_arr,
+                    view: result.product_view,
+                    wish: result.product_wish
                 })
             })
-            products_arr.push({
-                id: result.id_product,
-                name: result.product_name,
-                description: result.product_description,
-                brand_id: result.brand.id_brand,
-                brand_name: result.brand.brand_name,
-                type_id: result.type.id_type,
-                type_name: result.type.type_name,
-                price: result.product_price,
-                discount: result.product_discount,
-                images: products_images_arr,
-                view: result.product_view,
-                wish: result.product_wish
+            // res.json(products_arr)
+            res.status(200).json({
+                msg: "Get All Product Success",
+                totalItems: results.length,
+                product: products_arr
+
             })
         })
-        res.json(products_arr)
+
     }
     catch (err) {
         console.log(err)
         res.status(400).json({ msg: "Failed Get Product" })
     }
 }
+
+
 
 exports.getProduct = async function (req, res) {
     let id = req.params.id
