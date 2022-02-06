@@ -101,7 +101,8 @@ exports.getAllProduct = async function (req, res) {
                 price: result.product_price,
                 discount: result.product_discount,
                 images: products_images_arr,
-                view: result.product_view
+                view: result.product_view,
+                wish: result.product_wish
             })
         })
         res.json(products_arr)
@@ -146,7 +147,8 @@ exports.getProduct = async function (req, res) {
                 price: result.product_price,
                 discount: result.product_discount,
                 images: products_images_arr,
-                view: result.product_view
+                view: result.product_view,
+                wish: result.product_wish
             })
             Product.update({
                 product_view: parseInt(result.product_view) + 1
@@ -198,4 +200,92 @@ exports.deleteProduct = async function (req, res) {
     }
 }
 
+exports.getPopularWish = async function (req, res) {
+    try {
+        const products = await Product.findAll({
+            include: [{
+                model: Brand
+            }, {
+                model: Type
+            }, {
+                model: productImages
+            }],
+            order: [
+                ['product_wish', 'desc']
+            ]
+        })
+        let products_arr = []
+        products.forEach((result) => {
+            let products_images_arr = []
+            result.productimages.forEach((resultImage) => {
+                products_images_arr.push({
+                    path: req.get('host') + "/" + resultImage.file_path
+                })
+            })
+            products_arr.push({
+                id: result.id_product,
+                name: result.product_name,
+                description: result.product_description,
+                brand_id: result.brand.id_brand,
+                brand_name: result.brand.brand_name,
+                type_id: result.type.id_type,
+                type_name: result.type.type_name,
+                price: result.product_price,
+                discount: result.product_discount,
+                images: products_images_arr,
+                view: result.product_view,
+                wish: result.product_wish
+            })
+        })
+        res.json(products_arr)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(400).json({ msg: "Failed Get Product" })
+    }
+}
 
+exports.getPopularView = async function (req, res) {
+    try {
+        const products = await Product.findAll({
+            include: [{
+                model: Brand
+            }, {
+                model: Type
+            }, {
+                model: productImages
+            }],
+            order: [
+                ['product_view', 'desc']
+            ]
+        })
+        let products_arr = []
+        products.forEach((result) => {
+            let products_images_arr = []
+            result.productimages.forEach((resultImage) => {
+                products_images_arr.push({
+                    path: req.get('host') + "/" + resultImage.file_path
+                })
+            })
+            products_arr.push({
+                id: result.id_product,
+                name: result.product_name,
+                description: result.product_description,
+                brand_id: result.brand.id_brand,
+                brand_name: result.brand.brand_name,
+                type_id: result.type.id_type,
+                type_name: result.type.type_name,
+                price: result.product_price,
+                discount: result.product_discount,
+                images: products_images_arr,
+                view: result.product_view,
+                wish: result.product_wish
+            })
+        })
+        res.json(products_arr)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(400).json({ msg: "Failed Get Product" })
+    }
+}
