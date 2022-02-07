@@ -47,13 +47,13 @@ try {
     db.authenticate().then(async () => {
         console.log("DB Connection Success")
         //Sync DB || Delete Table -> Exec Sync
-        // await User.sync()
-        // await Brand.sync({ alter: true })
-        // await Type.sync({ alter: true })
-        // await Product.sync({ alter: true }).then(() => {
-        //     productImage.sync({ alter: true })
-        // })
-        // await Wish.sync({ alter: true })
+        await User.sync()
+        await Brand.sync({ alter: true })
+        await Type.sync({ alter: true })
+        await Product.sync({ alter: true }).then(() => {
+             productImage.sync({ alter: true })
+        })
+        await Wish.sync({ alter: true })
     })
 } catch (err) {
     console.log("DB Connection Failed")
